@@ -1,1 +1,64 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Weather Dashboard</title>\n    <link rel="stylesheet" href="style.css">\n</head>\n<body>\n    <div class="weather-dashboard">\n        <h1>Weather Dashboard</h1>\n        <div class="location-input">\n            <input type="text" id="location" placeholder="Enter location">\n            <button id="search">Search</button>\n        </div>\n        <div class="weather-info">\n            <div class="temperature">Temperature: <span id="temp"></span>&#8451;</div>\n            <div class="condition">Condition: <span id="condition"></span></div>\n        </div>\n    </div>\n    <div class="timezone-clock">\n        <h2>Multi-Timezone Clock</h2>\n        <div id="clocks">\n            <div class="clock">UTC: <span id="utc-clock"></span></div>\n            <div class="clock">EST: <span id="est-clock"></span></div>\n            <div class="clock">PST: <span id="pst-clock"></span></div>\n        </div>\n    </div>\n    <script src="script.js"></script>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List Application</title>
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskValue = taskInput.value.trim();
+            if (taskValue) {
+                tasks.push({ text: taskValue, completed: false });
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                taskInput.value = '';
+                renderTasks();
+            }
+        }
+
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.textContent = task.text;
+                if (task.completed) {
+                    li.style.textDecoration = 'line-through';
+                }
+                li.addEventListener('click', () => toggleTask(index));
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteTask(index);
+                });
+                li.appendChild(deleteButton);
+                taskList.appendChild(li);
+            });
+        }
+
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderTasks);
+    </script>
+</head>
+<body>
+    <h1>To-Do List Application</h1>
+    <input type="text" id="taskInput" placeholder="Enter a new task">
+    <button onclick="addTask()">Add</button>
+    <ul id="taskList"></ul>
+</body>
+</html>
